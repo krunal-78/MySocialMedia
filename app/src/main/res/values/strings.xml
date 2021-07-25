@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MySocialMedia</string>
+    <string name="sign_in">Sign In</string>
+    <string name="my_id">BE:29:9C:F1:F3:7F:B5:69:D5:84:9C:C2:3F:66:6B:16:C0:1D:25:3C</string>
+    <string name="what_do_you_want_to_post">What do you want to post...?</string>
+    <string name="post">post</string>
+    <string name="Logout_Alert">Do you want to Logout?</string>>
+    <string name="Logout">Logout</string>
+    <string name="Cancel">Cancel</string>
+
+</resources>

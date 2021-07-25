@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mysocialmedia">
+
+    <application android:name="androidx.multidex.MultiDexApplication"
+        android:icon="@drawable/ic_launcher_post"
+        android:roundIcon="@drawable/ic_launcher_post">
+        <activity android:name=".CreatePostActivity"
+            android:label="Create Post"
+            android:theme="@style/Theme.MySocialMedia"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="My Social Media"
+            android:theme="@style/Theme.MySocialMedia" />
+        <activity
+            android:name=".SignInActivity"
+            android:label="My Social Media"
+            android:theme="@style/Theme.MySocialMedia">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
