@@ -20,10 +20,14 @@ import com.example.mysocialmedia.interfaces.IPostAdapter;
 import com.example.mysocialmedia.models.Post;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
     private FirestoreRecyclerAdapter<Post, PostAdapter.PostViewHolder> postAdapter;
     private PostDao postDao;
     private ImageView logoutButton;
+    private GoogleSignInClient googleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,9 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
         recyclerView = findViewById(R.id.recyclerView);
         floatingActionButton = findViewById(R.id.floatingActionButton);
         logoutButton = findViewById(R.id.logoutButton);
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +78,8 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
                         Intent intent = new Intent(MainActivity.this,SignInActivity.class);
                         startActivity(intent);
                         Log.d("signInSuccess", "Log out current user Successfully!");
+                        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

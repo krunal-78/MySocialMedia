@@ -70,6 +70,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
         private final TextView postTitle;
         private final ImageView likeButton;
         private final TextView likeCount;
+        private final ImageView commentButton;
         public PostViewHolder(@NonNull  View itemView) {
             super(itemView);
             // Define click listener for the ViewHolder's View;
@@ -79,6 +80,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
             postTitle = (TextView)itemView.findViewById(R.id.postTitle);
             likeButton = (ImageView)itemView.findViewById(R.id.likeButton);
             likeCount = (TextView)itemView.findViewById(R.id.likeCount);
+            commentButton = (ImageView)itemView.findViewById(R.id.commentButton);
 //            likeButton.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {

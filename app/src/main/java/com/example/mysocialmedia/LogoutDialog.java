@@ -1,5 +1,6 @@
 package com.example.mysocialmedia;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -25,9 +26,9 @@ public class LogoutDialog extends DialogFragment {
     MainActivity mainActivity;
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mainActivity = (MainActivity) context;
+    public void onAttach(@NonNull Activity mainActivity) {
+        super.onAttach(mainActivity);
+        this.mainActivity = (MainActivity) mainActivity;
     }
 
 
@@ -48,7 +49,7 @@ public class LogoutDialog extends DialogFragment {
                         userCollection.document(currentUserId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Intent intent = new Intent(getActivity(),SignInActivity.class);
+                                Intent intent = new Intent(mainActivity.getApplicationContext(),SignInActivity.class);
                                 startActivity(intent);
                                 Log.d("signInSuccess", "Log out current user Successfully!");
                             }
