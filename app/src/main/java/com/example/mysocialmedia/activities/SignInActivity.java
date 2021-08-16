@@ -1,17 +1,16 @@
-package com.example.mysocialmedia;
+package com.example.mysocialmedia.activities;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.mysocialmedia.R;
 import com.example.mysocialmedia.daos.UserDao;
 import com.example.mysocialmedia.models.Users;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,13 +20,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.auth.User;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -57,12 +60,43 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-//        updateUI(firebaseUser);
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        progressBar.setVisibility(View.VISIBLE);
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        assert firebaseUser != null;
+        String currentUserId = firebaseUser.getUid();
+        assert firebaseUser != null;
+        Log.d("signInSuccess","id : "+firebaseUser.getUid());
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersCollection = db.collection("users");
+        usersCollection.document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    Log.d("signInSuccess","successfully got document with user id!");
+                    DocumentSnapshot userIdDocument = task.getResult();
+                    assert userIdDocument != null;
+                    if(userIdDocument.exists()){
+                        updateUI(firebaseUser);
+                    }
+                    else{
+                        progressBar.setVisibility(View.GONE);
+                        Log.d("signInSuccess","user id document don't exist");
+                    }
+                }
+                else{
+                    Log.d("signInSuccess"," can't successfully got document with user id!");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("signInSuccess","failed with exception : ",e);
+            }
+        });
+    }
 
     private void signIn() {
         googleSignInClient.signOut();
@@ -125,7 +159,7 @@ public class SignInActivity extends AppCompatActivity {
             //for adding into database make userDao instance;
             UserDao userDao = new UserDao();
             userDao.addUser(users);
-            Intent mainActivityIntent = new Intent(SignInActivity.this,MainActivity.class);
+            Intent mainActivityIntent = new Intent(SignInActivity.this, MainActivity.class);
             SignInActivity.this.startActivity(mainActivityIntent);
             Log.d(TAG,"MAIN ACTIVITY SUCCESS");
 //            finish();

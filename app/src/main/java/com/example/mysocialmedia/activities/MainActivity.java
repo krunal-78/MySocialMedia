@@ -1,20 +1,20 @@
-package com.example.mysocialmedia;
+package com.example.mysocialmedia.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.media.tv.TvContract;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.mysocialmedia.LogoutDialog;
+import com.example.mysocialmedia.adapters.PostAdapter;
+import com.example.mysocialmedia.R;
 import com.example.mysocialmedia.daos.PostDao;
 import com.example.mysocialmedia.interfaces.IPostAdapter;
 import com.example.mysocialmedia.models.Post;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
     private PostDao postDao;
     private ImageView logoutButton;
     private GoogleSignInClient googleSignInClient;
+    public static final String EXTRA_POST_ID = "com.example.mysocialmedia.activities.postId";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +57,8 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
             @Override
             public void onClick(View v) {
                 //take user to Create post activity through intent;
-                Intent intent = new Intent(MainActivity.this,CreatePostActivity.class);
+                Intent intent = new Intent(MainActivity.this, CreatePostActivity.class);
                 startActivity(intent);
-
             }
 
         });
@@ -66,27 +66,27 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                LogoutDialog logoutDialog = new LogoutDialog();
-//                logoutDialog.show(getSupportFragmentManager(),"logout");
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                String currentUserId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                CollectionReference userCollection = db.collection("users");
-                userCollection.document(currentUserId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Intent intent = new Intent(MainActivity.this,SignInActivity.class);
-                        startActivity(intent);
-                        Log.d("signInSuccess", "Log out current user Successfully!");
-                        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("signInSuccess","can't Logout current user!",e);
-                    }
-                });
+                LogoutDialog logoutDialog = new LogoutDialog();
+                logoutDialog.show(getSupportFragmentManager(),"logout");
+//                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+//                String currentUserId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                CollectionReference userCollection = db.collection("users");
+//                userCollection.document(currentUserId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+//                        startActivity(intent);
+//                        Log.d("signInSuccess", "Log out current user Successfully!");
+//                        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("signInSuccess","can't Logout current user!",e);
+//                    }
+//                });
             }
         });
         setUpRecyclerView();
@@ -110,6 +110,11 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
         recyclerView.setAdapter(postAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
     }
+
+    public void intentForLogoutDialog(){
+        Intent intent = new Intent(MainActivity.this,SignInActivity.class);
+        startActivity(intent);
+    }
     //now adapter should listen changes from firebase also;
     //we have to specify when should adapter start and stop listening to firebase;
 
@@ -130,4 +135,12 @@ public class MainActivity extends AppCompatActivity  implements IPostAdapter {
     public void onLikeClicked(String postId) {
         postDao.updateLike(postId);
     }
+
+    @Override
+    public void onCommentClicked(String postId) {
+        Intent intent = new Intent(this,comment_box.class);
+        intent.putExtra(EXTRA_POST_ID,postId);
+        startActivity(intent);
+    }
+
 }

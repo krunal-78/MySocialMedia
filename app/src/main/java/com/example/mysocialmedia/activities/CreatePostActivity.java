@@ -1,17 +1,16 @@
-package com.example.mysocialmedia;
+package com.example.mysocialmedia.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mysocialmedia.R;
 import com.example.mysocialmedia.daos.PostDao;
-import com.example.mysocialmedia.models.Post;
 
 public class CreatePostActivity extends AppCompatActivity {
     private EditText postInput;

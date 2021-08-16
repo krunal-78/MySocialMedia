@@ -7,5 +7,7 @@
     <string name="Logout_Alert">Do you want to Logout?</string>>
     <string name="Logout">Logout</string>
     <string name="Cancel">Cancel</string>
+    <string name="comment_box">Comment Box</string>
+    <string name="comment">Enter Comment...</string>
 
 </resources>

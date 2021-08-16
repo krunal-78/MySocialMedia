@@ -1,9 +1,13 @@
 package com.example.mysocialmedia.daos;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.mysocialmedia.activities.MainActivity;
+import com.example.mysocialmedia.activities.comment_box;
+import com.example.mysocialmedia.models.Comment;
 import com.example.mysocialmedia.models.Post;
 import com.example.mysocialmedia.models.Users;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,9 +47,12 @@ public class PostDao {
 
                     //get current time for displaying time of post it will return Long;
                     Long currentTime = System.currentTimeMillis();
+                    // liked by array list;
                     ArrayList<String> likedBy = new ArrayList<String>();
+                    //commented by array list;
+                    ArrayList<Comment> commentedBy = new ArrayList<Comment>();
                     //create post for that user;
-                    Post post = new Post(text, users, currentTime,likedBy);
+                    Post post = new Post(text, users, currentTime,likedBy,commentedBy);
                     //put post into post collection;
                     postCollection.document().set(post);
                 }

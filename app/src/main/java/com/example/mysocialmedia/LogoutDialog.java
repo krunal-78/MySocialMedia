@@ -3,7 +3,6 @@ package com.example.mysocialmedia;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.mysocialmedia.activities.MainActivity;
+import com.example.mysocialmedia.activities.SignInActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,8 +50,7 @@ public class LogoutDialog extends DialogFragment {
                         userCollection.document(currentUserId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Intent intent = new Intent(mainActivity.getApplicationContext(),SignInActivity.class);
-                                startActivity(intent);
+                                mainActivity.intentForLogoutDialog();
                                 Log.d("signInSuccess", "Log out current user Successfully!");
                             }
                         }).addOnFailureListener(new OnFailureListener() {

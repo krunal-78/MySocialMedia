@@ -1,8 +1,5 @@
-package com.example.mysocialmedia;
+package com.example.mysocialmedia.adapters;
 
-import android.content.Context;
-import android.provider.DocumentsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,40 +7,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.mysocialmedia.daos.PostDao;
-import com.example.mysocialmedia.daos.UserDao;
+import com.example.mysocialmedia.R;
+import com.example.mysocialmedia.Utils;
 import com.example.mysocialmedia.interfaces.IPostAdapter;
 import com.example.mysocialmedia.models.Post;
-import com.firebase.ui.database.ObservableSnapshotArray;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.okhttp.internal.DiskLruCache;
+import com.google.protobuf.StringValue;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -71,6 +50,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
         private final ImageView likeButton;
         private final TextView likeCount;
         private final ImageView commentButton;
+        private final TextView commentCount;
         public PostViewHolder(@NonNull  View itemView) {
             super(itemView);
             // Define click listener for the ViewHolder's View;
@@ -81,6 +61,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
             likeButton = (ImageView)itemView.findViewById(R.id.likeButton);
             likeCount = (TextView)itemView.findViewById(R.id.likeCount);
             commentButton = (ImageView)itemView.findViewById(R.id.commentButton);
+            commentCount = (TextView)itemView.findViewById(R.id.commentCount);
 //            likeButton.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
@@ -130,6 +111,14 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
         public TextView getLikeCount() {
             return likeCount;
         }
+
+        public ImageView getCommentButton() {
+            return commentButton;
+        }
+
+        public TextView getCommentCount() {
+            return commentCount;
+        }
     }
     @NonNull
     @Override
@@ -163,8 +152,20 @@ public class PostAdapter extends FirestoreRecyclerAdapter<Post,PostAdapter.PostV
                 iPostAdapter.onLikeClicked(likedPostId);
             }
         });
-
-
+        holder.commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DocumentSnapshot snapshot = getSnapshots().getSnapshot(position);
+                String PostId = snapshot.getId();
+                iPostAdapter.onCommentClicked(PostId);
+            }
+        });
+//        if(model.getCommentedBy()==null){
+//            holder.getCommentCount().setText(String.valueOf(0));
+//        }
+//        else{
+            holder.getCommentCount().setText(String.valueOf(model.getCommentedBy().size()));
+//        }
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         String currentUserId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         boolean isLiked = model.getLikedBy()==null? false : model.getLikedBy().contains(currentUserId);

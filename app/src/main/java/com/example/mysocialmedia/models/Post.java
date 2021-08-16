@@ -14,15 +14,16 @@ public class Post {
     private Long createdAt;
     private String PostId;
     private ArrayList<String> likedBy = new ArrayList<String>();
-
+    private ArrayList<Comment> commentedBy = new ArrayList<Comment>();
     public Post(){
         likedBy = new ArrayList<String>();
     }
-    public Post(String text,Users createdBy,Long createdAt, ArrayList<String> likedBy){
+    public Post(String text,Users createdBy,Long createdAt, ArrayList<String> likedBy,ArrayList<Comment> commentedBy){
         this.text = text;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.likedBy = likedBy;
+        this.commentedBy = commentedBy;
     }
     public Post(String text,Users createdBy,Long createdAt){
         this.text = text;
@@ -48,6 +49,10 @@ public class Post {
         this.likedBy = likedBy;
     }
 
+    public void setCommentedBy(ArrayList<Comment> commentedBy) {
+        this.commentedBy = commentedBy;
+    }
+
     public String getText() {
         return text;
     }
@@ -66,6 +71,10 @@ public class Post {
     @Exclude
     public String getPostId() {
         return PostId;
+    }
+
+    public ArrayList<Comment> getCommentedBy() {
+        return commentedBy;
     }
 
     public void setPostId(String postId) {
